@@ -17,5 +17,18 @@ const db = mysql.createConnection(
         password: 'JackStendeback',
         database: 'employee_db'
     },
-    
-)
+    console.log('Connected to the employee_db database.')
+);
+
+// Querying the database/tables.
+db.query('SELECT * FROM department', function (err, results) {
+    console.log(results);
+});
+
+db.query('SELECT * FROM roles', function (err, results) {
+    console.log(results);
+})
+
+db.query('SELECT * FROM employees', function (err, results) {
+    console.log(results);
+})
