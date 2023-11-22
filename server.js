@@ -32,3 +32,12 @@ db.query('SELECT * FROM roles', function (err, results) {
 db.query('SELECT * FROM employees', function (err, results) {
     console.log(results);
 })
+
+// Default responses
+app.use((req, res) => {
+    res.status(404).end();
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});g
