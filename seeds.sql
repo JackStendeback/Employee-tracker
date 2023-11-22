@@ -34,3 +34,5 @@ VALUES
     (6001, "Daniel", "Kim", 006, 6602),
     (7001, "Ava", "Patel", 007, 7702),
     (8001, "Benjamin", "Garcia", 008, NULL)
+
+    SELECT * FROM employees;
