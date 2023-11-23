@@ -67,4 +67,6 @@ function addDepartments() {
     });
 }
 
-module.exports = { viewDepartments, addDepartments };g
+
+// * ADD COMMENTS TO FURTHER UNDERSTAND WHAT WE ARE DOING HERE.
+module.exports = { viewDepartments, addDepartments };
