@@ -25,6 +25,30 @@ function viewDepartments() {
 
 function addDepartments() {
     return new Promise((resolve, reject) => {
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'department_name',
+                message: 'What would you like to name the new department?',
+            },
+        ])
+        .then((answers) => {
+            const checkQuery = 'SELECT * FROM department WHERE name = ?';
+            const valueCheck = [answers.name];
 
+            connection.query(checkQuery, valueCheck, (err, results) => {
+                if (err) {
+                    console.error('Error, could not find existing department', err);
+                    reject(err);
+                    return;
+                }
+                if (results.length > 0) {
+                    console.log(`\nThe department '${answers.name}' already exists.`);
+                    resolve();
+                    return;
+                }
+                
+            })
+        })
     });
 }
