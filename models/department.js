@@ -57,9 +57,14 @@ function addDepartments() {
                         return;
                     }
 
-                    
-                })
-            })
-        })
+                    console.log(`\n${answers.name} this department has been successfully added.`);
+                    viewDepartments().then(() => {
+                        resolve();
+                    });
+                });
+            });
+        });
     });
 }
+
+module.exports = { viewDepartments, addDepartments };g
