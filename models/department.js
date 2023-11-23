@@ -47,7 +47,18 @@ function addDepartments() {
                     resolve();
                     return;
                 }
-                
+                const insertQuery = 'INSERT INTO department (name) VALUES (?)';
+                const valueInsert = [answers.name];
+
+                connection.query(insertQuery, valueInsert, (err, result) => {
+                    if (err) {
+                        console.error('Erorr, could not add department.', err);
+                        reject(err);
+                        return;
+                    }
+
+                    
+                })
             })
         })
     });
