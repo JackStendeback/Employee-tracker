@@ -6,6 +6,7 @@ const {
 const {
     displayRoles,
     addRole,   
+    fetchRoles,
 } = require('./models/roles');
 const {
     viewEmployees,
@@ -39,13 +40,14 @@ async function mainMenu() {
                     await viewDepartments();
                     break;
                 case 'View all roles':
-                    await displayRoles(); // Utilize displayRoles here
+                    const roles = await fetchRoles();
+                    displayRoles(roles);
                     break;
                 case 'View all employees':
                     await viewEmployees();
                     break;
                 case 'Add a department':
-                    await addDepartments(); // Utilize addDepartments here
+                    await addDepartments();
                     break;
                 case 'Add a role':
                     await addRole();

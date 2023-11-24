@@ -12,8 +12,22 @@ const db = mysql.createPool({
     database: 'employee_db'
 });
 
+app.get('/employees', (req, res) => {
+    db.query('SELECT * FROM employees', (err, results) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+app.post('/employees', (req, res) => {
+    res.status(501).send('Not implemented');
+});
+
 app.use((req, res) => {
-    res.status(404).end();
+    res.status(404).send('Not found');
 });
 
 app.listen(PORT, () => {
