@@ -1,25 +1,24 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); 
 const app = express();
 
 const PORT = process.env.PORT || 3002;
 
-const db = mysql.createPool({
-    connectionLimit: 10, 
+const pool = mysql.createPool({
+    connectionLimit: 10,
     host: 'localhost',
     user: 'root',
     password: 'JackStendeback',
     database: 'employee_db'
 });
 
-app.get('/employees', (req, res) => {
-    db.query('SELECT * FROM employees', (err, results) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json(results);
-    });
+app.get('/employees', async (req, res) => {
+    try {
+        const [rows, fields] = await pool.query('SELECT * FROM employees');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.post('/employees', (req, res) => {
@@ -34,4 +33,5 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = db;
+module.exports = pool;
+

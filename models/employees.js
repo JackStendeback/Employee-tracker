@@ -1,53 +1,46 @@
 const inquirer = require('inquirer');
 const connection = require('../server.js');
-const { table } = require('table');
 const util = require('util');
+const { table } = require('table');
 const db = require('../server');
 
 async function viewEmployees() {
-    const query = `
-        SELECT
-            e.id AS 'Employee ID',
-            CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name',
-            r.title AS 'Employee Role',
-            CONCAT(m.first_name, ' ', m.last_name) AS 'Manager Name'
-        FROM employees AS e
-        LEFT JOIN roles AS r ON e.role_id = r.id
-        LEFT JOIN employees AS m ON e.manager_id = m.id`;
-
-    const queryAsync = util.promisify(connection.query).bind(connection);
-
     try {
-        const results = await queryAsync(query);
+        const query = `
+            SELECT
+                e.id AS 'Employee ID',
+                CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name',
+                r.title AS 'Employee Role',
+                CONCAT(m.first_name, ' ', m.last_name) AS 'Manager Name'
+            FROM employees AS e
+            LEFT JOIN roles AS r ON e.role_id = r.id
+            LEFT JOIN employees AS m ON e.manager_id = m.id`;
 
-        const employeeData = [];
-        results.forEach((employee) => {
-            employeeData.push([
-                employee['Employee ID'],
-                employee['Employee Name'],
-                employee['Employee Role'],
-                employee['Manager Name']
-            ]);
-        });
+        const [results] = await db.query(query);
 
-        const Table = require('cli-table');
-        const table = new Table({
-            head: ['Employee ID', 'Employee Name', 'Employee Role', 'Manager Name']
-        });
+        const employeeData = results.map((employee) => [
+            employee['Employee ID'],
+            employee['Employee Name'],
+            employee['Employee Role'],
+            employee['Manager Name']
+        ]);
 
-        employeeData.forEach((row) => {
-            table.push(row);
-        });
+        const tableConfig = {
+            columns: {
+                0: { alignment: 'left' },
+                1: { alignment: 'left' },
+                2: { alignment: 'left' },
+                3: { alignment: 'left' }
+            }
+        };
 
         console.log('\nAll Employees:');
-        console.log(table.toString());
-        return;
+        console.log(table(employeeData, tableConfig));
     } catch (err) {
         console.error('Error fetching employees from the database:', err);
         throw err;
     }
 }
-
 
 function addEmployee() {
     return new Promise(async (resolve, reject) => {

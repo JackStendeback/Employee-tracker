@@ -8,6 +8,9 @@ async function fetchRoles() {
     try {
         const query = 'SELECT * FROM roles';
         const results = await connection.query(query);
+        
+        console.log('Retrieved roles:', results);
+
         return results;
     } catch (error) {
         console.error('Error fetching roles', error);
@@ -15,16 +18,39 @@ async function fetchRoles() {
     }
 }
 
-function displayRoles(roles) {
-    const data = [['Role ID', 'Title', 'Salary', 'Department ID']];
-    roles.forEach((role) => {
-        data.push([role.id, role.title, role.salary, role.department_id]);
-    });
+async function displayRoles(roles) {
+    try {
+        if (!roles || roles.length === 0) {
+            console.log('No roles found.');
+            return;
+        }
 
-    const output = table(data);
-    console.log('\nAll Roles:');
-    console.log(output);
+        console.log('Roles data:', roles);
+
+        const data = roles.map((role) => [
+            role.id,
+            role.title,
+            role.salary,
+            role.department_id
+        ]);
+
+        const tableConfig = {
+            columns: {
+                0: { alignment: 'left' },
+                1: { alignment: 'left' },
+                2: { alignment: 'left' },
+                3: { alignment: 'left' }
+            }
+        };
+
+        console.log('\nAll Roles:');
+        console.log(table(data, tableConfig));
+    } catch (err) {
+        console.error('Error displaying roles:', err);
+        throw err;
+    }
 }
+
 
 async function addRole() {
     try {
