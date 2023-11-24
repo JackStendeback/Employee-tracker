@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const connection = require('../server.js');
 const { table } = require('table');
 const util = require('util');
+const db = require('../server');
 
 async function viewEmployees() {
     const query = `

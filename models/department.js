@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const connection = require('../server');
 const { table } = require('table');
+const db = require('../server');
 
 function viewDepartments() {
     return new Promise((resolve, reject) => {

@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const connection = require('../server.js');
 const { table } = require('table');
 const { viewDepartments } = require('./department');
+const db = require('../server');
 
 async function fetchRoles() {
     try {
