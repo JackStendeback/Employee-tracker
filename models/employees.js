@@ -164,8 +164,57 @@ function insertEmployee(query, values) {
 }
 
 
-function updateEmployee() {
-    return new Promise((resolve, reject) =>  {
+async function updateEmployeeRole() {
+    const queryEmployees = util.promisify(connection.query).bind(connection);
 
-    })
+    try {
+        const employeeResults = await queryEmployees('SELECT id, CONCAT(first_name, " ", last_name) AS employee_name FROM employees');
+
+        const roleResults = await queryEmployees('SELECT id, title FROM roles');
+
+        const employees = employeeResults.map((employee) => ({
+            name: employee.employee_name,
+            value: employee.id,
+        }));
+
+        const roles = roleResults.map((role) => ({
+            name: role.title,
+            value: role.id,
+        }));
+
+        const answers = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employee_id',
+                message: "Select the employee you want to update:",
+                choices: employees,
+            },
+            {
+                type: 'list',
+                name: 'new_role_id',
+                message: "Select the new role for the employee:",
+                choices: roles,
+            },
+        ]);
+
+        const { employee_id, new_role_id } = answers;
+
+        const updateQuery = 'UPDATE employees SET role_id = ? WHERE id = ?';
+        const updateValues = [new_role_id, employee_id];
+
+        const updateEmployee = util.promisify(connection.query).bind(connection);
+        const result = await updateEmployee(updateQuery, updateValues);
+
+        if (result.affectedRows === 0) {
+            console.log('No employee found with the provided ID.');
+        } else {
+            console.log(`Updated employee's role (Employee ID: ${employee_id}).`);
+            await viewEmployees();
+        }
+    } catch (error) {
+        console.error('Error updating employee role:', error);
+        throw error;
+    }
 }
+
+module.exports = { viewEmployees, addEmployee, updateEmployeeRole };
