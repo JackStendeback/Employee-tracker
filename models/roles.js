@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const connection = require('../server.js');
 const { table } = require('table');
+const { viewDepartments } = require('./department');
 
 async function fetchRoles() {
     try {
@@ -26,7 +27,7 @@ function displayRoles(roles) {
 
 async function addRole() {
     try {
-        const departments = await fetchDepartments();
+        const departments = await viewDepartments();
 
         const departmentChoices = departments.map((department) => ({
             name: department.department_name,

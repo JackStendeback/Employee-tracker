@@ -34,7 +34,7 @@ function addDepartments() {
         ])
         .then((answers) => {
             const checkQuery = 'SELECT * FROM department WHERE name = ?';
-            const valueCheck = [answers.name];
+            const valueCheck = [answers.department_name];
 
             connection.query(checkQuery, valueCheck, (err, results) => {
                 if (err) {
@@ -48,11 +48,11 @@ function addDepartments() {
                     return;
                 }
                 const insertQuery = 'INSERT INTO department (name) VALUES (?)';
-                const valueInsert = [answers.name];
+                const valueInsert = [answers.department_name];
 
                 connection.query(insertQuery, valueInsert, (err, result) => {
                     if (err) {
-                        console.error('Erorr, could not add department.', err);
+                        console.error('Error, could not add department.', err);
                         reject(err);
                         return;
                     }
