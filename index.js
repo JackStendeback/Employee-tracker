@@ -1,17 +1,17 @@
 const inquirer = require('inquirer');
 const {
     viewDepartments,
-    addDepartment,
+    addDepartments,
 } = require('./models/department');
 const {
     viewRoles,
     addRole,
-} = require('./models/role');
+} = require('./models/roles');
 const {
     viewEmployees,
     addEmployee,
     updateEmployeeRole,
-} = require('./models/employee');
+} = require('./models/employees');
 
 async function mainMenu() {
     while (true) {
@@ -67,5 +67,5 @@ async function mainMenu() {
     }
 }
 
-// ? gStart the application by invoking the main menu
+// ? Start the application by invoking the main menu
 mainMenu();

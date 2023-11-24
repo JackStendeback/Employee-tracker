@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const connection = require('../dbConnection');
+const connection = require('../server.js');
 const { table } = require('table');
 
 async function fetchRoles() {
