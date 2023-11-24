@@ -1,42 +1,52 @@
 const inquirer = require('inquirer');
 const connection = require('../server.js');
 const { table } = require('table');
+const util = require('util');
 
-function viewEmployees() {
-    return new Promise((resolve, reject) => {
-        const query = `
-    SELECT
-        e.id AS 'EmployeeID',
-        CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name',
-        r.title AS 'Employee Role',
-        CONCAT(m.first_name, ' ', m.last_name) AS 'Manager Name'
-    FROM employees AS e
-    LEFT JOIN roles AS r ON e.role_id = r.id
-    LEFT JOIN employees AS m ON e.manager_id = m.id`;
+async function viewEmployees() {
+    const query = `
+        SELECT
+            e.id AS 'Employee ID',
+            CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name',
+            r.title AS 'Employee Role',
+            CONCAT(m.first_name, ' ', m.last_name) AS 'Manager Name'
+        FROM employees AS e
+        LEFT JOIN roles AS r ON e.role_id = r.id
+        LEFT JOIN employees AS m ON e.manager_id = m.id`;
 
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error('Error, could not fetch employees within database.', err);
-            return;
-        }
+    const queryAsync = util.promisify(connection.query).bind(connection);
 
-        const employeeData = [['Employee ID', 'First Name', 'Last Name', 'Role', 'Manager']];
+    try {
+        const results = await queryAsync(query);
+
+        const employeeData = [];
         results.forEach((employee) => {
-            data.push([
+            employeeData.push([
                 employee['Employee ID'],
-                employee['First Name'],
-                employee['Last Name'],
-                employee['Role'],
-                employee['Manager']
+                employee['Employee Name'],
+                employee['Employee Role'],
+                employee['Manager Name']
             ]);
         });
-        const output = table(data);
+
+        const Table = require('cli-table');
+        const table = new Table({
+            head: ['Employee ID', 'Employee Name', 'Employee Role', 'Manager Name']
+        });
+
+        employeeData.forEach((row) => {
+            table.push(row);
+        });
+
         console.log('\nAll Employees:');
-        console.log(output);
-        resolve();
-    });
-  });
+        console.log(table.toString());
+        return;
+    } catch (err) {
+        console.error('Error fetching employees from the database:', err);
+        throw err;
+    }
 }
+
 
 function addEmployee() {
     return new Promise(async (resolve, reject) => {
